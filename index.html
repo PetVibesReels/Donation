@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>PetVibes Donation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, "Cairo", sans-serif;
+      background-color: #f9f9f4;
+      background-image: url('https://i.imgur.com/xkFoh4T.png');
+      background-repeat: repeat;
+      background-size: 200px;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 550px;
+      width: 90%;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #264e36;
+      margin-top: 0;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      line-height: 1.4;
+    }
+    h2 {
+      font-size: 2rem;
+    }
+    .payment-section {
+        margin-top: 2rem;
+        padding: 20px;
+        border: 1px solid #eee;
+        border-radius: 12px;
+    }
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #555;
+        text-align: left;
+    }
+    label {
+      display: block;
+      margin: 0.5rem 0 0.3rem;
+      font-weight: 600;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      text-align: center;
+      max-width: 250px; 
+      margin: 0 auto 15px;
+      display: block;
+    }
+    #paypal-buttons {
+      width: 100%;
+      max-width: 300px;
+      margin: 15px auto 0;
+    }
+    .btn-crypto {
+      background-color: #FF9800;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: 0.3s ease;
+    }
+    .btn-crypto:hover {
+        background-color: #F57C00;
+    }
+    .modal {
+        display: none; 
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.6); 
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 450px;
+        position: relative;
+        text-align: left;
+    }
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 30px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+    }
+    .close-btn:hover,
+    .close-btn:focus {
+        color: #000;
+        cursor: pointer;
+    }
+    .currency-select {
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+    }
+    .crypto-details {
+        margin-top: 15px;
+        text-align: center;
+    }
+    .crypto-details p {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 6px;
+        word-break: break-all;
+        font-size: 0.95rem;
+        margin-top: 5px;
+        text-align: left;
+    }
+    .crypto-details strong {
+        display: block;
+        color: #333;
+        margin-bottom: 5px;
+        font-weight: 600;
+        text-align: left;
+    }
+    .qr-code-img {
+        display: block;
+        margin: 15px auto 5px;
+        width: 180px;
+        height: 180px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 5px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🐾 PetVibes</h2>
+    <h1>Thanks to you, we provide food for 1500 pets and offer them shelter 💚</h1>
+
+    <div class="payment-section">
+      <div class="section-title">Support us with PayPal or Card:</div>
+
+      <label for="donation-amount">Donation amount (USD)</label>
+      <input type="number" id="donation-amount" name="donation_amount" step="0.01" min="1" value="33.00">
+
+      <div id="paypal-buttons"></div>
+    </div>
+
+    <div class="payment-section">
+      <div class="section-title">Pay with Crypto Currency:</div>
+      <button id="openCryptoModal" class="btn-crypto">
+          Pay with Crypto
+      </button>
+    </div>
+
+    <div class="footer">
+      🐾 Every dollar helps us rescue, feed, and care for more animals. Thank you for your kindness!
+    </div>
+  </div>
+
+    <div id="cryptoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Crypto Donation Gateway</h3>
+            <p>Please select a currency to view the donation address.</p>
+
+            <select id="currencySelect" class="currency-select">
+                <option value="none" selected disabled>Select a Crypto Currency</option>
+                <option value="usdt">USDT (BEP20)</option>
+                <option value="usdc">USDC (BEP20)</option>
+            </select>
+
+            <div id="cryptoDetails" class="crypto-details"></div>
+        </div>
+    </div>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAqFBJEFBE1uOfU5Ur5lGCvvDtDvh8rHzfEw44mFeSi-yBPrgg9EHylOB8VV1M0roL7gIgVdx1_ePXEsE&currency=USD"></script>
+
+  <script>
+    const PAYPAL_BUSINESS_ID = 'BAAqFBJEFBE1uOfU5Ur5lGCvvDtDvh8rHzfEw44mFeSi-yBPrgg9EHylOB8VV1M0roL7gIgVdx1_ePXEsE'; 
+    const WALLET_ADDRESS = '0x6eacffa827a7667b6a8bfc9bbe9491a6fc1d86c0';
+
+    const CRYPTO_CONFIG = {
+        'usdt': {
+            address: WALLET_ADDRESS,
+            qr_code_url: 'https://drive.google.com/uc?export=download&id=1ub-vbw-nfSL_6G_PojboLNgmd029VKqe',
+            network: 'BEP20 (Binance Smart Chain)'
+        },
+        'usdc': {
+            address: WALLET_ADDRESS,
+            qr_code_url: 'https://drive.google.com/uc?export=download&id=10-TxgL4iUpQZ4vLrYBpO2qE83tAYkx16', 
+            network: 'BEP20 (Binance Smart Chain)'
+        }
+    };
+
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        const amount = document.getElementById('donation-amount').value || '13.00';
+        return actions.order.create({
+          purchase_units: [{
+            description: 'PetVibes Donation',
+            amount: { value: amount, currency_code: 'USD' }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('Thanks ' + details.payer.name.given_name + '! Your donation has been successfully received 🎉');
+        });
+      },
+      onError: function(err) {
+        console.error('PayPal Error:', err);
+        alert('An error occurred while processing the PayPal payment. Please try again.');
+      }
+    }).render('#paypal-buttons');
+
+    const modal = document.getElementById("cryptoModal");
+    const btn = document.getElementById("openCryptoModal");
+    const span = document.getElementsByClassName("close-btn")[0];
+    const select = document.getElementById("currencySelect");
+    const detailsDiv = document.getElementById("cryptoDetails");
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+        select.value = "none";
+        detailsDiv.innerHTML = "";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    select.onchange = function() {
+        const currency = this.value;
+        const config = CRYPTO_CONFIG[currency];
+
+        if (!config) {
+            detailsDiv.innerHTML = '';
+            return;
+        }
+
+        const cryptoTemplate = (currencyName) => `
+            <h4 style="text-align:center;">${currencyName} (${config.network})</h4>
+            <strong>Network:</strong>
+            <p>${config.network}</p>
+            <strong>Wallet Address:</strong>
+            <p>${config.address}</p>
+            <strong>Scan QR Code:</strong>
+            <img src="${config.qr_code_url}" alt="${currencyName} QR Code" class="qr-code-img">
+            <p style="text-align:center; background: none; padding: 0; font-size: 0.9rem; color: #555; margin-top: 15px;">
+               (Please use BEP20 network only for ${currencyName})
+            </p>
+        `;
+
+        detailsDiv.innerHTML = cryptoTemplate(currency.toUpperCase());
+    }
+  </script>
+</body>
+</html>
